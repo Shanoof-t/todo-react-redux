@@ -10,10 +10,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { loaded, onMark } from "../features/todohome/todoHomeSlice";
+import { useNavigate } from "react-router-dom";
 
 function TodoHome() {
   const dispatch = useDispatch();
   const todoData = useSelector((state) => state.todoHome);
+  const navigate = useNavigate();
   const handleInputChange = (e) => {
     const val = e.target.value;
     dispatch(loaded(val));
@@ -39,9 +41,17 @@ function TodoHome() {
   };
 
   const handleDelete = (id) => {
-    dispatch(deleteTask(id)).then(() => {
-      dispatch(fetchTask());
-    });
+    dispatch(deleteTask(id))
+      .then(() => {
+        dispatch(fetchTask());
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  const handleNavigate = (id) => {
+    navigate(`task/${id}`);
   };
   return (
     <div className="bg-gray-900 w-full h-screen flex justify-center items-center">
@@ -97,7 +107,7 @@ function TodoHome() {
             </div>
             <div
               className="flex-1 ms-2"
-              //   onClick={() => handleNavigate(task.id)}
+              onClick={() => handleNavigate(task.id)}
             >
               {task.mark ? (
                 <h6 className="line-through text-gray-500">{task.task}</h6>
